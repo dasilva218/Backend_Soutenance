@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 const stockMovementSchema = new mongoose.Schema({
+    code_produit: { type: String, required: true },
     product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
     agency: { type: String, required: true }, 
     quantity: { type: Number, required: true },

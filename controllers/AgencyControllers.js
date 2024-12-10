@@ -60,7 +60,7 @@ const updateAgency = async (req, res) => {
         res.json(updatedAgency);
     } catch (error) {
         if (error.name === 'CastError') {
-            return res.status(400).json({ error: 'ID d’agence invalide' });
+            return res.status(400).json({ error: " ID d’agence invalide " });
         }
         res.status(500).json({ error: 'Erreur du serveur', details: error.message });
     }

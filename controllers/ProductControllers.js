@@ -2,63 +2,60 @@ import Product from '../models/ProductsModels.js';
 import Category from '../models/categoryModels.js';
 import StockModels from '../models/StockModels.js';
 
-
-
-const createProduct = async (req, res) => {
-    const { code_produit, name, category, price } = req.body;
+export const createProduct = async (req, res) => {
+    const { code_produit, produit, supplier, category, price, isFree = false, quantity = 0, minStockLevel } = req.body;
 
     try {
         
-        if (!code_produit || !name || !category || !price) {
+        if (!code_produit || !produit || !supplier || !category || !price || quantity === undefined || !minStockLevel) {
             return res.status(400).json({ error: 'Tous les champs sont requis' });
         }
 
         
-        const newProduct = new Product({ code_produit, name, category, price });
+        const existingProduct = await Product.findOne({ code_produit });
+        if (existingProduct) {
+            return res.status(409).json({ error: 'Le code produit doit être unique' });
+        }
+
+        const newProduct = new Product({ code_produit, produit, supplier, category, price, isFree, quantity, minStockLevel });
         await newProduct.save();
         res.status(201).json(newProduct);
     } catch (error) {
-        
         res.status(500).json({ error: 'Erreur du serveur', details: error.message });
     }
 };
 
-
-
-const addProduct = async (req, res) => {
-    const { code_produit, name, supplier, category, price, isFree, quantity, minStockLevel } = req.body;
+export const addProduct = async (req, res) => {
+    const { code_produit, produit, supplier, category, price, isFree, quantity, minStockLevel } = req.body;
 
     try {
         
-        if (!code_produit || !name || !supplier || !category || !price || quantity === undefined || !minStockLevel) {
+        if (!code_produit || !produit || !supplier || !category || !price || quantity === undefined || !minStockLevel) {
             return res.status(400).json({ error: 'Tous les champs sont requis' });
         }
 
         
-        const existingProduct = await Product.findOne({ name, supplier });
-
+        const existingProduct = await Product.findOne({ code_produit });
         if (existingProduct) {
-            
-            existingProduct.quantity += quantity;
+            return res.status(409).json({ error: 'Le code produit doit être unique' });
+        }
 
-            
-            await existingProduct.save();
-
-            return res.status(200).json({ message: 'Quantité mise à jour', product: existingProduct });
+        const existingProductByName = await Product.findOne({ name, supplier });
+        if (existingProductByName) {
+            existingProductByName.quantity += quantity;
+            await existingProductByName.save();
+            return res.status(200).json({ message: 'Quantité mise à jour', product: existingProductByName });
         } else {
-            
             const newProduct = new Product({ code_produit, name, supplier, category, price, isFree, quantity, minStockLevel });
             await newProduct.save();
             return res.status(201).json(newProduct);
         }
     } catch (error) {
-        
         res.status(500).json({ error: 'Erreur du serveur', details: error.message });
     }
 };
 
-
-const getProductsBySupplier = async (req, res) => {
+export const getProductsBySupplier = async (req, res) => {
     const { supplierId } = req.params;
 
     try {
@@ -72,21 +69,21 @@ const getProductsBySupplier = async (req, res) => {
     }
 };
 
-
-
-const getProductsByCategory = async (req, res) => {
+export const getProductsByCategory = async (req, res) => {
     const { categoryId } = req.params;
 
     try {
         const products = await Product.find({ category: categoryId }).populate('supplier');
+        if (!products.length) {
+            return res.status(404).json({ error: 'Aucun produit trouvé pour cette catégorie' });
+        }
         res.json(products);
     } catch (error) {
         res.status(500).json({ error: 'Erreur du serveur', details: error.message });
     }
 };
 
-
-const updateProduct = async (req, res) => {
+export const updateProduct = async (req, res) => {
     const { id } = req.params;
     const updates = req.body;
 
@@ -97,7 +94,6 @@ const updateProduct = async (req, res) => {
         }
         res.json(product);
     } catch (error) {
-       
         if (error.name === 'ValidationError') {
             return res.status(400).json({ error: 'Données invalides', details: error.message });
         }
@@ -105,8 +101,7 @@ const updateProduct = async (req, res) => {
     }
 };
 
-
-const deleteProduct = async (req, res) => {
+export const deleteProduct = async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -120,5 +115,5 @@ const deleteProduct = async (req, res) => {
     }
 };
 
-
-export { addProduct, getProductsBySupplier, updateProduct, deleteProduct, getProductsByCategory, createProduct };
+// Exportation des fonctions
+export default { createProduct, addProduct, getProductsBySupplier, getProductsByCategory, updateProduct, deleteProduct };

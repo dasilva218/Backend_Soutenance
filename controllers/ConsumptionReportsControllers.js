@@ -4,10 +4,6 @@ import authenticate from '../middleware/auth.js';
 
 
 
-
-
-
-
 const validateConsomptionReport = [
     body('agency').notEmpty().withMessage('L\'agence est requise.'),
     body('product').isMongoId().withMessage('L\'ID du produit est invalide.'),
@@ -135,12 +131,4 @@ const deleteConsumptionReport = async (req, res) => {
 };
 
 
-export {
-    createConsumptionReport,
-    getConsumptionReports,
-    getConsumptionReportById,
-    updateConsumptionReport,
-    deleteConsumptionReport,
-    generateWeeklyConsumptionReport,
-    validateConsomptionReport
-};
+export { createConsumptionReport, getConsumptionReports, getConsumptionReportById, updateConsumptionReport, deleteConsumptionReport, generateWeeklyConsumptionReport, validateConsomptionReport };

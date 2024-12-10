@@ -1,19 +1,18 @@
-// userRoutes.js
-
 import express from 'express';
-import { createUser, deleteUser, getUserById, loginUser, registerUser, updateUser } from '../controllers/userControllers.js';
-import { authenticate, authorize } from '../middleware/auth.js';
+import { createUserForAgency, deleteUser, getUserById, loginUser, registerUser, updateUser } from '../controllers/userControllers.js';
+import { authenticate } from '../middleware/auth.js';
+
 
 
 
 const router = express.Router();
 
-router.post('/', registerUser);
-router.post('/', authenticate, authorize('admin'), createUser);
-router.post('/', authenticate, authorize('admin', 'user'), loginUser);
-router.get('/:id', authenticate, getUserById);
-router.put('/:id', authenticate, authorize('admin'), updateUser);
-router.delete('/:id', authenticate, authorize('admin'), deleteUser);
+router.post('/register', registerUser);
+router.post('/login', loginUser);
+router.post('/admin/create-user', authenticate, createUserForAgency);
+router.get('/:id', getUserById);
+router.put('/:id', updateUser);
+router.delete('/:id', deleteUser);
 
 
 

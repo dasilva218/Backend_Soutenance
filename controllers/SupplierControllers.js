@@ -1,8 +1,11 @@
 import Supplier from '../models/SuppliersModels.js'; 
 
-
-const createSupplier = async (req, res) => {
+export const createSupplier = async (req, res) => {
     const { name } = req.body;
+
+    if (!name) {
+        return res.status(400).json({ error: 'Le nom du fournisseur est requis' });
+    }
 
     try {
         const newSupplier = new Supplier({ name });
@@ -19,8 +22,7 @@ const createSupplier = async (req, res) => {
     }
 };
 
-
-const getSuppliers = async (req, res) => {
+export const getSuppliers = async (req, res) => {
     try {
         const suppliers = await Supplier.find();
         res.status(200).json(suppliers);
@@ -29,8 +31,7 @@ const getSuppliers = async (req, res) => {
     }
 };
 
-
-const getSupplierById = async (req, res) => {
+export const getSupplierById = async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -47,13 +48,16 @@ const getSupplierById = async (req, res) => {
     }
 };
 
-
-const updateSupplier = async (req, res) => {
+export const updateSupplier = async (req, res) => {
     const { id } = req.params;
     const { name } = req.body;
 
+    if (!name) {
+        return res.status(400).json({ error: 'Le nom du fournisseur est requis' });
+    }
+
     try {
-        const updatedSupplier = await Supplier.findByIdAndUpdate(id, { name }, { new: true });
+        const updatedSupplier = await Supplier.findByIdAndUpdate(id, { name }, { new: true, runValidators: true });
         if (!updatedSupplier) {
             return res.status(404).json({ error: 'Fournisseur non trouvé' });
         }
@@ -66,8 +70,7 @@ const updateSupplier = async (req, res) => {
     }
 };
 
-
-const deleteSupplier = async (req, res) => {
+export const deleteSupplier = async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -84,4 +87,5 @@ const deleteSupplier = async (req, res) => {
     }
 };
 
-export { createSupplier, getSuppliers, getSupplierById, updateSupplier, deleteSupplier };
+// Exportation des fonctions
+export default { createSupplier, getSuppliers, getSupplierById, updateSupplier, deleteSupplier };

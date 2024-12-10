@@ -1,17 +1,26 @@
-import category from '../models/categoryModels.js';
+import Category from '../models/categoryModels.js';
+
 
 
 
 export const createCategory = async (req, res) => {
-    const { name } = req.body;
+    const { name } = req.body; 
 
     try {
-        const category = new category({ name });
-        await category.save();
-        res.statut(201).json(category);
+       
+        const existingCategory = await Category.findOne({ name });
+        if (existingCategory) {
+            return res.status(400).json({ message: 'La catégorie existe déjà' });
+        }
+
+        
+        const newCategory = new Category({ name });
+        await newCategory.save();
+
+        return res.status(201).json({ message: 'Catégorie créée avec succès', category: newCategory });
     } catch (error) {
-        (400).json({ message: error.message })
-    } 
+        return res.status(500).json({ message: error.message });
+    }
 };
 
 
@@ -47,7 +56,7 @@ export const updateCategory = async (req, res) => {
         if (!category) return res.status(404).json({ message: 'Catégorie non trouvée' });
         res.status(200).json(category);
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        res.status(500).json({ message: error.message }); 
     }
 };
 
@@ -63,3 +72,6 @@ export const deleteCategory = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+
+export default { createCategory, getCategories, getCategoryById, updateCategory, deleteCategory };

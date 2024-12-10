@@ -4,7 +4,7 @@ import { addProduct, createProduct, deleteProduct, getProductsByCategory, getPro
 const router = express.Router();
 
 router.post('/', addProduct);
-router.post('/', createProduct)
+router.post('/admin/create-Product', createProduct)
 router.get('/supplier/:supplierId', getProductsBySupplier);
 router.get('/category/:categoryId', getProductsByCategory);
 router.put('/:id', updateProduct);
