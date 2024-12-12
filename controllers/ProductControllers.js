@@ -1,6 +1,6 @@
 import Product from '../models/ProductsModels.js';
-import Category from '../models/categoryModels.js';
-import StockModels from '../models/StockModels.js';
+
+
 
 export const createProduct = async (req, res) => {
     const { code_produit, produit, supplier, category, price, isFree = false, quantity = 0, minStockLevel } = req.body;

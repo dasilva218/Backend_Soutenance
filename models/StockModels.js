@@ -1,13 +1,18 @@
 import mongoose from 'mongoose';
 
 const stockSchema = new mongoose.Schema({
-    productId: {
+    code_produit: {
+        type: String,
+        required: true
+    },
+    product: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product', 
+        ref: 'Produit',
         required: true
     },
     supplier: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'supplier',
         required: true
     },
     quantity: {

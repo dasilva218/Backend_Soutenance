@@ -1,15 +1,20 @@
 import ConsumptionReport from '../models/ConsumptionReportsModels.js';
 import { body, validationResult } from 'express-validator';
-import authenticate from '../middleware/auth.js';
+
 
 
 
 const validateConsomptionReport = [
     body('agency').notEmpty().withMessage('L\'agence est requise.'),
     body('product').isMongoId().withMessage('L\'ID du produit est invalide.'),
-    body('totalConsumed').isNumeric().withMessage('Le total consommé doit être un nombre.'),
-    body('dateRange').notEmpty().withMessage('La période est requise.')
-]; 
+    body('stockInitial').isNumeric().withMessage('Le stock initial doit être un nombre.'),
+    body('entrees').isNumeric().withMessage('Les entrées doivent être un nombre.'),
+    body('sorties').isNumeric().withMessage('Les sorties doivent être un nombre.'),
+    body('stockFinal').isNumeric().withMessage('Le stock final doit être un nombre.'),
+    body('date').optional().isISO8601().withMessage('La date doit être au format ISO 8601.')
+];
+
+
 
 
 
@@ -24,7 +29,7 @@ const generateWeeklyConsumptionReport = async (req, res) => {
     try {
         const reports = await ConsumptionReport.find({
             date: { $gte: startDate, $lt: endDate }
-        })
+        }) 
         .populate('product')
         .populate('agency')
         .populate('supplier');
@@ -54,16 +59,25 @@ const createConsumptionReport = async (req, res) => {
         return res.status(400).json({ errors: errors.array() });
     }
 
-    const { agency, product, totalConsumed, dateRange } = req.body;
+    const { agency, product, stockInitial, entrees, sorties, stockFinal } = req.body;
 
     try {
-        const newReport = new ConsumptionReport({ agency, product, totalConsumed, dateRange });
+        const newReport = new ConsumptionReport({
+            agence: agency,
+            produit: product,
+            stockInitial,
+            entrees,
+            sorties,
+            stockFinal,
+            date: new Date()
+        });
         await newReport.save();
         res.status(201).json(newReport);
     } catch (error) {
         res.status(500).json({ error: 'Erreur du serveur', details: error.message });
     }
 };
+
 
 
 const getConsumptionReports = async (req, res) => {

@@ -1,5 +1,5 @@
 import express from 'express';
-import { createUserForAgency, deleteUser, getUserById, loginUser, registerUser, updateUser } from '../controllers/userControllers.js';
+import { createUserForAgency, deleteUser, getAllUsers, getUserById, loginUser, registerUser, updateUser } from '../controllers/userControllers.js';
 import { authenticate } from '../middleware/auth.js';
 
 
@@ -11,6 +11,7 @@ router.post('/register', registerUser);
 router.post('/login', loginUser);
 router.post('/admin/create-user', authenticate, createUserForAgency);
 router.get('/:id', getUserById);
+router.get('/', getAllUsers);
 router.put('/:id', updateUser);
 router.delete('/:id', deleteUser);
 

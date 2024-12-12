@@ -1,5 +1,6 @@
 import Distribute from '../models/DistributeModels.js'; 
 import Product from '../models/ProductsModels.js'; 
+import mongoose from 'mongoose';
 
 
 
@@ -24,13 +25,13 @@ export const createDistribution = async (req, res) => {
 
         
         if (quantity > productFound.quantity) {
-            return res.status(400).json({ error: 'Quantité demandée supérieure à la quantité disponible' });
+            return res.status(400).json({ error: 'Quantité demandée est supérieure à la quantité disponible' });
         }
 
-        // Création de la distribution
+        
         const distribution = new Distribute({
-            code_produit, // Utilisation du code_produit
-            product, // ID du produit
+            code_produit, 
+            product, 
             quantity,
             distributedBy,
             distributedTo,
@@ -40,14 +41,15 @@ export const createDistribution = async (req, res) => {
 
         await distribution.save();
 
-        // Mise à jour de la quantité du produit
+        
         productFound.quantity -= quantity;
         await productFound.save();
 
-        // Réponse avec la distribution créée
         res.status(201).json(distribution);
     } catch (error) {
-        // Gestion des erreurs
+        
+        
+        
         if (error.name === 'ValidationError') {
             return res.status(400).json({ error: 'Erreur de validation', details: error.message });
         }

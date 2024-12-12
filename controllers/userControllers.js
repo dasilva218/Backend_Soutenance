@@ -154,6 +154,18 @@ const getUserById = async (req, res) => {
 };
 
 
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find(); 
+
+        res.status(200).json({ users });
+    } catch (error) {
+        res.status(500).json({ error: 'Erreur du serveur', details: error.message });
+    }
+};
+
+
+
 const updateUser = async (req, res) => {
     const { id } = req.params;
     const { username, password, role, agency } = req.body;
@@ -192,6 +204,6 @@ const deleteUser = async (req, res) => {
     }
 };
 
-export { createUserForAgency, getUserById, updateUser, deleteUser, loginUser, registerUser };
+export { createUserForAgency, getUserById, getAllUsers, updateUser, deleteUser, loginUser, registerUser };
 
 

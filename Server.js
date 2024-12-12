@@ -58,7 +58,7 @@ app.use('/api/register', userRoutes);
 app.use('/api/login', userRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/Fournisseur', supplierRoutes);
-app.use('/api/Mouvement-Stock', StockmovementRoutes);
+app.use('/api/Stock', StockmovementRoutes);
 app.use('/api/Produit', productRoutes);
 app.use('/api/distribuer', DistributeRoutes);
 app.use('/api/consumption-reports', ConsumptionReportsRoutes);
