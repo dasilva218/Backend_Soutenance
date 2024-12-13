@@ -24,7 +24,7 @@ import CategoryRoutes from './routes/CategoryRoutes.js';
 dotenv.config();
 const app = express()
 const users = [];
-const PORT = process.env.PORT || 3003;
+const PORT = process.env.PORT || 5000;
 
 
 connectToDatabase();
