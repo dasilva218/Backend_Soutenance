@@ -20,32 +20,23 @@ const generateToken = (user) => {
 const loginUser = async (req, res) => {
     const { username, password } = req.body;
 
+    if (!username || !password) {
+        return res.status(400).json({ error: 'Les champs username et password sont requis.' });
+    }
+
     try {
-        
-        if (!username || !password) {
-            return res.status(400).json({ error: 'Les champs username et password sont requis.' });
-        }
-
-        
         const user = await User.findOne({ username });
-        if (!user) {
+        if (!user || !(await bcrypt.compare(password, user.password))) {
             return res.status(401).json({ error: 'Nom d’utilisateur ou mot de passe incorrect' });
         }
 
-        
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(401).json({ error: 'Nom d’utilisateur ou mot de passe incorrect' });
-        }
-
-        
-        const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
+        const token = generateToken(user);
         res.status(200).json({ message: 'Connexion réussie', token });
     } catch (error) {
         res.status(500).json({ error: 'Erreur du serveur', details: error.message });
     }
 };
+
 
 
 
