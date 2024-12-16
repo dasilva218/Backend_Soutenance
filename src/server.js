@@ -2,15 +2,16 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import {connectToDatabase} from './config/db.js';
-import userRoutes from './routes/userRoutes.js';
-import supplierRoutes from './routes/SupplierRoutes.js';
-import StockmovementRoutes from './routes/StockmovementRoutes.js'
-import productRoutes from './routes/ProductRoutes.js';
-import ConsumptionReportsRoutes from './routes/consumptionReportsRoutes.js'
-import DistributeRoutes from './routes/DistributeRoutes.js'
-import AgencyRoutes from './routes/AgencyRoutes.js';
-import CategoryRoutes from './routes/CategoryRoutes.js';
+import {connectToDatabase} from '../config/db.js';
+import userRoutes from '../routes/userRoutes.js';
+import supplierRoutes from '../routes/SupplierRoutes.js';
+import StockmovementRoutes from '../routes/StockmovementRoutes.js'
+import productRoutes from '../routes/ProductRoutes.js';
+import ConsumptionReportsRoutes from '../routes/consumptionReportsRoutes.js'
+import DistributeRoutes from '../routes/DistributeRoutes.js'
+import AgencyRoutes from '../routes/AgencyRoutes.js';
+import CategoryRoutes from '../routes/CategoryRoutes.js';
+
 
 
 
