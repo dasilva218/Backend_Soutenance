@@ -3,27 +3,25 @@ import Product from '../models/ProductsModels.js';
 
 
 export const createProduct = async (req, res) => {
-    const { code_produit, produit, supplier, category, price, isFree = false, quantity = 0, minStockLevel } = req.body;
+    const {code_produit, produit } = req.body;
 
     try {
         
-        if (!code_produit || !produit || !supplier || !category || !price || quantity === undefined || !minStockLevel) {
+        if (!code_produit || !produit) {
             return res.status(400).json({ error: 'Tous les champs sont requis' });
         }
 
         
-        const existingProduct = await Product.findOne({ code_produit });
-        if (existingProduct) {
-            return res.status(409).json({ error: 'Le code produit doit être unique' });
-        }
-
-        const newProduct = new Product({ code_produit, produit, supplier, category, price, isFree, quantity, minStockLevel });
+        const newProduct = new Product({ produit });
         await newProduct.save();
+        
+        
         res.status(201).json(newProduct);
     } catch (error) {
         res.status(500).json({ error: 'Erreur du serveur', details: error.message });
     }
-};
+}; 
+
 
 export const addProduct = async (req, res) => {
     const { code_produit, produit, supplier, category, price, isFree, quantity, minStockLevel } = req.body;
