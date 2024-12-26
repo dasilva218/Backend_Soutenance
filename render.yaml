@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: Backend_Soutenance
+    env: node
+    plan: starter
+    buildCommand: npm install
+    startCommand: npm start
