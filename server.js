@@ -22,6 +22,7 @@ import CategoryRoutes from './routes/CategoryRoutes.js';
 
 
 
+
 dotenv.config();
 const app = express()
 const users = [];
