@@ -4,4 +4,4 @@ services:
     env: node
     plan: starter
     buildCommand: npm install
-    startCommand: node Backend_Soutenance/server.js
+    startCommand: node server.js
