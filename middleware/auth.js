@@ -44,3 +44,4 @@ export const authorize = (roles = []) => {
 
 
 export default { authenticate, authorize };
+

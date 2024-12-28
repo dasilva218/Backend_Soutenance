@@ -1,85 +1,76 @@
 import User from '../models/UsersModels.js';
+import Admin from '../models/AdminModels.js';
+import { generateToken } from '../config/jwt.js';
+import Agency from '../models/AgencyModels.js';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 
-
-
-const JWT_SECRET = 'votre_clé_secrète';
-
-const generateToken = (user) => {
-    const payload = {
-        id: user._id,
-        role: user.role,
-    };
-
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '24h' });
-    return token;
+ const registerAdmin = async (req, res) => {
+    const { adminName, password } = req.body;
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newAdmin = new Admin({ adminName, password: hashedPassword });
+        await newAdmin.save();
+        res.status(201).json(newAdmin);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 };
 
-const loginUser = async (req, res) => {
-    const { username, password } = req.body;
+ const loginAdmin = async (req, res) => {
+    const { adminName, password } = req.body;
+    try {
+        const admin = await Admin.findOne({ adminName });
+        if (admin && await bcrypt.compare(password, admin.password)) {
+            const token = generateToken(admin._id);
+            res.status(200).json({ token, admin });
+        } else {
+            res.status(401).json({ message: 'Identifiants invalides' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
-    if (!username || !password) {
-        return res.status(400).json({ error: 'Les champs username et password sont requis.' });
+  const createUserForAgency = async (req, res) => {
+    const { username, password, role, agencyId } = req.body;
+
+    
+    if (req.user.role !== 'admin') {
+        return res.status(403).json({ error: 'Accès refusé' });
     }
 
     try {
-        const user = await User.findOne({ username });
-        if (!user || !(await bcrypt.compare(password, user.password))) {
-            return res.status(401).json({ error: 'Nom d’utilisateur ou mot de passe incorrect' });
+        
+        if (!username || !password || !role || !agencyId) {
+            return res.status(400).json({ error: 'Tous les champs sont requis.' });
         }
 
-        const token = generateToken(user);
-        res.status(200).json({ message: 'Connexion réussie', token });
-    } catch (error) {
-        res.status(500).json({ error: 'Erreur du serveur', details: error.message });
-    }
-};
-
-
-
-
-const registerUser = async (req, res) => {
-    const { username, password, role } = req.body;
-
-    if (!username || !password || !role)  {
-        return res.status(400).json({ error: 'Nom d\'utilisateur et mot de passe sont requis.' });
-    }
-
-    try {
+        
         const existingUser = await User.findOne({ username });
         if (existingUser) {
             return res.status(400).json({ error: 'Utilisateur déjà existant' });
         }
 
+        
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        
         const newUser = new User({
             username,
             password: hashedPassword,
-            role 
+            role,
         });
 
         await newUser.save();
 
-        const token = generateToken(newUser);
+        
+        await Agency.findByIdAndUpdate(agencyId, { $push: { users: newUser._id } });
 
-        res.status(201).json({ token, user: { id: newUser._id, username: newUser.username, role: newUser.role } });
+        res.status(201).json({ message: 'Utilisateur créé avec succès', user: newUser });
     } catch (error) {
-        if (error.name === 'ValidationError') {
-            return res.status(400).json({ error: 'Données invalides', details: error.message });
-        }
-        if (error.code === 11000) {
-            return res.status(400).json({ error: 'Nom d\'utilisateur déjà pris' });
-        }
-
         res.status(500).json({ error: 'Erreur du serveur', details: error.message });
     }
 };
-
-
-
-
 
 const getUserById = async (req, res) => {
     const { id } = req.params;
@@ -150,6 +141,6 @@ const deleteUser = async (req, res) => {
     }
 };
 
-export { getUserById, getAllUsers, updateUser, deleteUser, loginUser, registerUser };
+export { registerAdmin, loginAdmin, createUserForAgency, getUserById, getAllUsers, updateUser, deleteUser };
 
 

@@ -11,6 +11,7 @@ import ConsumptionReportsRoutes from './routes/consumptionReportsRoutes.js'
 import DistributeRoutes from './routes/DistributeRoutes.js'
 import AgencyRoutes from './routes/AgencyRoutes.js';
 import CategoryRoutes from './routes/CategoryRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
 
 
 
@@ -56,8 +57,8 @@ app.use(express.urlencoded({ extended: true }));
 
 
 // Routes
-app.use('/api/register', userRoutes);
-app.use('/api/login', userRoutes);
+
+app.use('/api/admin', adminRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/Fournisseur', supplierRoutes);
 app.use('/api/Stock', StockmovementRoutes);
