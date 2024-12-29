@@ -26,7 +26,6 @@ import adminRoutes from './routes/adminRoutes.js';
 
 dotenv.config();
 const app = express()
-const users = [];
 const PORT = process.env.PORT || 5000;
 
 

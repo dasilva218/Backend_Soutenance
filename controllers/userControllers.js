@@ -81,75 +81,8 @@ const registerUser = async (req, res) => {
 
 
 
-const getUserById = async (req, res) => {
-    const { id } = req.params;
-
-    try {
-        const user = await User.findById(id);
-        if (!user) {
-            return res.status(404).json({ error: 'Utilisateur non trouvé' });
-        }
-        res.json(user);
-    } catch (error) {
-        
-        if (error.name === 'CastError') {
-            return res.status(400).json({ error: 'ID d’utilisateur invalide' });
-        }
-        res.status(500).json({ error: 'Erreur du serveur', details: error.message });
-    }
-};
 
 
-const getAllUsers = async (req, res) => {
-    try {
-        const users = await User.find(); 
-
-        res.status(200).json({ users });
-    } catch (error) {
-        res.status(500).json({ error: 'Erreur du serveur', details: error.message });
-    }
-};
-
-
-
-const updateUser = async (req, res) => {
-    const { id } = req.params;
-    const { username, password, role, agency } = req.body;
-
-    try {
-        const updatedUser = await User.findByIdAndUpdate(id, { username, password, role, agency }, { new: true });
-        if (!updatedUser) {
-            return res.status(404).json({ error: 'Utilisateur non trouvé' });
-        }
-        res.json(updatedUser);
-    } catch (error) {
-        
-        if (error.name === 'CastError') {
-            return res.status(400).json({ error: 'ID d’utilisateur invalide' });
-        }
-        res.status(500).json({ error: 'Erreur du serveur', details: error.message });
-    }
-};
-
-
-const deleteUser = async (req, res) => {
-    const { id } = req.params;
-
-    try {
-        const deletedUser = await User.findByIdAndDelete(id);
-        if (!deletedUser) {
-            return res.status(404).json({ error: 'Utilisateur non trouvé' });
-        }
-        res.status(204).send(); 
-    } catch (error) {
-        
-        if (error.name === 'CastError') {
-            return res.status(400).json({ error: 'ID d’utilisateur invalide' });
-        }
-        res.status(500).json({ error: 'Erreur du serveur', details: error.message });
-    }
-};
-
-export { getUserById, getAllUsers, updateUser, deleteUser, loginUser, registerUser };
+export { loginUser, registerUser };
 
 
