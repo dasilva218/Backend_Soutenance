@@ -45,7 +45,7 @@ const getAgencyById = async (req, res) => {
         }
         res.status(500).json({ error: 'Erreur du serveur', details: error.message });
     }
-};
+}; 
 
 
 const updateAgency = async (req, res) => {

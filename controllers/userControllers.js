@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 
 
 
-const JWT_SECRET = 'votre_clé_secrète';
+const JWT_SECRET = 'NéPourReussir!!!';
 
 const generateToken = (user) => {
     const payload = {
@@ -39,7 +39,7 @@ const loginUser = async (req, res) => {
 
 
 
-const registerUser = async (req, res) => {
+/* const registerUser = async (req, res) => {
     const { username, password, role } = req.body;
 
     if (!username || !password || !role)  {
@@ -75,7 +75,7 @@ const registerUser = async (req, res) => {
 
         res.status(500).json({ error: 'Erreur du serveur', details: error.message });
     }
-};
+};  */
 
 
 
@@ -83,6 +83,6 @@ const registerUser = async (req, res) => {
 
 
 
-export { loginUser, registerUser };
+export { loginUser };
 
 
