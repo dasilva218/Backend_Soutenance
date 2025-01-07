@@ -1,5 +1,9 @@
 import ConsumptionReport from '../models/ConsumptionReportsModels.js';
 import { body, validationResult } from 'express-validator';
+import Product from '../models/ProductsModels.js';
+import Agency from '../models/AgencyModels.js';
+import Supplier from '../models/SuppliersModels.js';
+import mongoose from 'mongoose';
 
 
 
@@ -32,7 +36,12 @@ const generateWeeklyConsumptionReport = async (req, res) => {
         }) 
         .populate('product')
         .populate('agency')
-        .populate('supplier');
+        .populate('supplier')
+        .populate('stockInitial')
+        .populate('entrees')
+        .populate('stockFinal')
+        .populate('date');
+        
 
         
         const aggregatedReports = reports.reduce((acc, report) => {
@@ -59,25 +68,43 @@ const createConsumptionReport = async (req, res) => {
         return res.status(400).json({ errors: errors.array() });
     }
 
-    const { agency, product, stockInitial, entrees, sorties, stockFinal } = req.body;
+    const { agence, code_Produit, produit, fournisseur, stockInitial, entrees, sorties, stockFinal } = req.body;
+
+    
+    if (!mongoose.isValidObjectId(agence) || !mongoose.isValidObjectId(produit) || !mongoose.isValidObjectId(fournisseur)) {
+        return res.status(400).json({ error: 'Un ou plusieurs ObjectId sont invalides.' });
+    }
 
     try {
+       
+        const [productExists, agencyExists, supplierExists] = await Promise.all([
+            Product.exists({ _id: produit }),
+            Agency.exists({ _id: agence }),
+            Supplier.exists({ _id: fournisseur })
+        ]);
+
+        if (!productExists || !agencyExists || !supplierExists) {
+            return res.status(404).json({ error: 'Produit, agence ou fournisseur introuvable.' });
+        }
+
         const newReport = new ConsumptionReport({
-            agence: agency,
-            produit: product,
+            agence,
+            code_Produit,
+            produit,
+            fournisseur,
             stockInitial,
             entrees,
             sorties,
             stockFinal,
             date: new Date()
         });
+
         await newReport.save();
         res.status(201).json(newReport);
     } catch (error) {
         res.status(500).json({ error: 'Erreur du serveur', details: error.message });
     }
 };
-
 
 
 const getConsumptionReports = async (req, res) => {

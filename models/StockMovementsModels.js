@@ -10,17 +10,17 @@ const stockMovementSchema = new mongoose.Schema({
         ref: 'Product', 
         required: true 
     },
-    agency: { 
+    agence: { 
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'Agency', 
         required: true 
     },
-    supplier: { 
+    fournisseur: { 
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'supplier', 
         required: true 
     }, 
-    quantity: { 
+    quantité: { 
         type: Number, 
         required: true 
     },
