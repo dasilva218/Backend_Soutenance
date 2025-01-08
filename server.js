@@ -1,30 +1,20 @@
-import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import {connectToDatabase} from './config/db.js';
-import userRoutes from './routes/userRoutes.js';
-import supplierRoutes from './routes/SupplierRoutes.js';
-import StockmovementRoutes from './routes/StockmovementRoutes.js'
-import productRoutes from './routes/ProductRoutes.js';
-import ConsumptionReportsRoutes from './routes/consumptionReportsRoutes.js'
-import DistributeRoutes from './routes/DistributeRoutes.js'
+import express from 'express';
+import cron from 'node-cron';
+import { connectToDatabase } from './config/db.js';
+import { createConsumptionReport } from './controllers/ConsumptionReportsControllers.js';
+import ConsumptionData from './models/ConsumptionReportsModels.js';
 import AgencyRoutes from './routes/AgencyRoutes.js';
 import CategoryRoutes from './routes/CategoryRoutes.js';
+import DistributeRoutes from './routes/DistributeRoutes.js';
+import productRoutes from './routes/ProductRoutes.js';
+import StockmovementRoutes from './routes/StockmovementRoutes.js';
+import supplierRoutes from './routes/SupplierRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
-import cron from 'node-cron';
-import ConsumptionData from './models/ConsumptionReportsModels.js';
-import { createConsumptionReport } from './controllers/ConsumptionReportsControllers.js'; 
-
-
-
-
-
-
-
-
-
-
+import ConsumptionReportsRoutes from './routes/consumptionReportsRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 
 
 dotenv.config();
@@ -59,7 +49,7 @@ app.use(express.urlencoded({ extended: true }));
 
 
 // Routes
-
+app.use('/',(req,res)=> res.json({message:"Welcome to the API"}) );
 app.use('/api/admin', adminRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/Fournisseur', supplierRoutes);
